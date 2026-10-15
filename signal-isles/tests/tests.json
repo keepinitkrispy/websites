@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Create a bot match and start play",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": ["lobby creation", "bot seat creation", "game start route", "initial durable game state"],
+    "description": "Verifies the fastest critical workflow creates a lobby with a bot and enters a playable match.",
+    "steps": ["Enter the call sign Test Captain", "Choose 1 starting bot and create the match", "Start the match"],
+    "expected": "A 4x4 board appears, Test Captain and Bot A have starting islands, and Test Captain can take the first turn."
+  },
+  {
+    "name": "Join a lobby and receive live roster updates",
+    "viewport": "desktop",
+    "covers": ["join by match code", "cross-client realtime subscription", "subscription create and delete routes", "lobby state persistence"],
+    "description": "Verifies two browser actors can share a no-login lobby and see the same roster.",
+    "steps": ["Actor A creates a lobby with 0 bots and copies the match code", "Actor B opens the app, enters the code, and joins as Scout", "Actor A observes Scout appear without refreshing"],
+    "expected": "Both actors see the same match code and a roster containing both human players."
+  },
+  {
+    "name": "Play strategic actions and preserve replay",
+    "viewport": "desktop",
+    "covers": ["move route family", "charge action", "claim action", "fortify action", "raid action", "bot turn engine", "match log and replay route"],
+    "description": "Verifies the core strategy loop changes energy and territory while recording an observable match history.",
+    "steps": ["Create and start a match with one bot", "Charge on the first turn, then claim an adjacent neutral island on the next human turn", "Fortify an owned island and later raid an adjacent enemy when enough energy is available"],
+    "expected": "Energy, ownership, shields, turn count, and the visible match signal update after each action; the replay endpoint returns the same ordered actions."
+  },
+  {
+    "name": "Reject an illegal or out-of-turn move",
+    "viewport": "mobile",
+    "covers": ["move validation guardrails", "player token boundary", "mobile command controls"],
+    "description": "Verifies invalid actions do not mutate the game and produce a visible explanation.",
+    "steps": ["Create and start a match on mobile", "Try to claim an island when it is not the human player's turn or when the island is not adjacent", "Observe the command panel"],
+    "expected": "A visible error explains why the command was rejected and the board state remains unchanged."
+  },
+  {
+    "name": "Read public state, standings, API help, and final result",
+    "viewport": "desktop",
+    "covers": ["public game read route", "agent API documentation route", "standings", "win condition", "finished game state"],
+    "description": "Verifies humans and agents can understand current state and the match reaches a clear winner.",
+    "steps": ["Open the Agent API link and inspect the documented actions", "Play a bot match until one player reaches 8 islands or turn 28", "Inspect the winner banner, standings, and match log"],
+    "expected": "The API help is readable, standings are ordered by islands then energy, and the finished match names exactly one winner."
+  }
+]
